@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Membro</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-container h2 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        table td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+        table td input {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+            border: none;
+            outline: none;
+        }
+        .add-form-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-form-button:hover {
+            background-color: #0056b3;
+        }
+        .save-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .save-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="forms-container">
+        <div class="form-container">
+            <h2>Cadastro de Membro</h2>
+            <table>
+                <tr>
+                    <td>Nome:</td>
+                    <td colspan="6"><input type="text" id="nome1"></td>
+                </tr>
+                <tr>
+                    <td>Cargo:</td>
+                    <td><input type="text" id="cargo1"></td>
+                    <td>Data do Batismo:</td>
+                    <td colspan="4"><input type="text" id="dataBatismo1" oninput="formatarData(this)"></td>
+                </tr>
+                <tr>
+                    <td>Campo:</td>
+                    <td><input type="text" id="campo1"></td>
+                    <td>Congregação:</td>
+                    <td colspan="4"><input type="text" id="congregacao1"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2">Filiação:</td>
+                    <td>Pai:</td>
+                    <td colspan="5"><input type="text" id="pai1"></td>
+                </tr>
+                <tr>
+                    <td>Mãe:</td>
+                    <td colspan="5"><input type="text" id="mae1"></td>
+                </tr>
+                <tr>
+                    <td>Naturalidade:</td>
+                    <td colspan="2"><input type="text" id="naturalidade1"></td>
+                    <td>Nacionalidade:</td>
+                    <td colspan="3"><input type="text" id="nacionalidade1"></td>
+                </tr>
+                <tr>
+                    <td>Nascimento:</td>
+                    <td><input type="text" id="nascimento1" oninput="formatarData(this)"></td>
+                    <td>Sexo:</td>
+                    <td><input type="text" id="sexo1"></td>
+                    <td>Estado Civil:</td>
+                    <td colspan="2"><input type="text" id="estadoCivil1"></td>
+                </tr>
+                <tr>
+                    <td>Identidade:</td>
+                    <td><input type="text" id="identidade1"></td>
+                    <td>Órgão Expedidor:</td>
+                    <td colspan="4"><input type="text" id="orgaoExpedidor1"></td>
+                </tr>
+            </table>
+            <button class="save-button" onclick="generatePDF(1)">Salvar como PDF</button>
+        </div>
+    </div>
+
+    <button class="add-form-button" onclick="addForm()">Adicionar outro cadastro</button>
+
+    <script>
+        let formCount = 1;
+
+        function addForm() {
+            formCount++;
+            const newForm = `
+                <div class="form-container">
+                    <h2>Cadastro de Membro</h2>
+                    <table>
+                        <tr>
+                            <td>Nome:</td>
+                            <td colspan="6"><input type="text" id="nome${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td>Cargo:</td>
+                            <td><input type="text" id="cargo${formCount}"></td>
+                            <td>Data do Batismo:</td>
+                            <td colspan="4"><input type="text" id="dataBatismo${formCount}" oninput="formatarData(this)"></td>
+                        </tr>
+                        <tr>
+                            <td>Campo:</td>
+                            <td><input type="text" id="campo${formCount}"></td>
+                            <td>Congregação:</td>
+                            <td colspan="4"><input type="text" id="congregacao${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">Filiação:</td>
+                            <td>Pai:</td>
+                            <td colspan="5"><input type="text" id="pai${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td>Mãe:</td>
+                            <td colspan="5"><input type="text" id="mae${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td>Naturalidade:</td>
+                            <td colspan="2"><input type="text" id="naturalidade${formCount}"></td>
+                            <td>Nacionalidade:</td>
+                            <td colspan="3"><input type="text" id="nacionalidade${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td>Nascimento:</td>
+                            <td><input type="text" id="nascimento${formCount}" oninput="formatarData(this)"></td>
+                            <td>Sexo:</td>
+                            <td><input type="text" id="sexo${formCount}"></td>
+                            <td>Estado Civil:</td>
+                            <td colspan="2"><input type="text" id="estadoCivil${formCount}"></td>
+                        </tr>
+                        <tr>
+                            <td>Identidade:</td>
+                            <td><input type="text" id="identidade${formCount}"></td>
+                            <td>Órgão Expedidor:</td>
+                            <td colspan="4"><input type="text" id="orgaoExpedidor${formCount}"></td>
+                        </tr>
+                    </table>
+                    <button class="save-button" onclick="generatePDF(${formCount})">Salvar como PDF</button>
+                </div>
+            `;
+            document.getElementById('forms-container').insertAdjacentHTML('beforeend', newForm);
+        }
+
+        function formatarData(input) {
+            // Remove tudo que não é número
+            let value = input.value.replace(/\D/g, '');
+
+            // Adiciona as barras automaticamente
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            if (value.length > 5) {
+                value = value.slice(0, 5) + '/' + value.slice(5, 9);
+            }
+
+            // Atualiza o valor do campo
+            input.value = value;
+        }
+
+        function generatePDF(formNumber) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const nome = document.getElementById(`nome${formNumber}`).value;
+            const cargo = document.getElementById(`cargo${formNumber}`).value;
+            const dataBatismo = document.getElementById(`dataBatismo${formNumber}`).value;
+            const campo = document.getElementById(`campo${formNumber}`).value;
+            const congregacao = document.getElementById(`congregacao${formNumber}`).value;
+            const pai = document.getElementById(`pai${formNumber}`).value;
+            const mae = document.getElementById(`mae${formNumber}`).value;
+            const naturalidade = document.getElementById(`naturalidade${formNumber}`).value;
+            const nacionalidade = document.getElementById(`nacionalidade${formNumber}`).value;
+            const nascimento = document.getElementById(`nascimento${formNumber}`).value;
+            const sexo = document.getElementById(`sexo${formNumber}`).value;
+            const estadoCivil = document.getElementById(`estadoCivil${formNumber}`).value;
+            const identidade = document.getElementById(`identidade${formNumber}`).value;
+            const orgaoExpedidor = document.getElementById(`orgaoExpedidor${formNumber}`).value;
+
+            doc.text(`Nome: ${nome}`, 10, 10);
+            doc.text(`Cargo: ${cargo}`, 10, 20);
+            doc.text(`Data do Batismo: ${dataBatismo}`, 10, 30);
+            doc.text(`Campo: ${campo}`, 10, 40);
+            doc.text(`Congregação: ${congregacao}`, 10, 50);
+            doc.text(`Filiação - Pai: ${pai}`, 10, 60);
+            doc.text(`Filiação - Mãe: ${mae}`, 10, 70);
+            doc.text(`Naturalidade: ${naturalidade}`, 10, 80);
+            doc.text(`Nacionalidade: ${nacionalidade}`, 10, 90);
+            doc.text(`Nascimento: ${nascimento}`, 10, 100);
+            doc.text(`Sexo: ${sexo}`, 10, 110);
+            doc.text(`Estado Civil: ${estadoCivil}`, 10, 120);
+            doc.text(`Identidade: ${identidade}`, 10, 130);
+            doc.text(`Órgão Expedidor: ${orgaoExpedidor}`, 10, 140);
+
+            doc.save(`cadastro_membro_${formNumber}.pdf`);
+        }
+    </script>
+
+</body>
+</html>
